@@ -1,0 +1,72 @@
+﻿@page "/weather"
+@inject HttpClient Http
+
+<PageTitle>Gieo Quẻ Đầu Năm</PageTitle>
+
+<div class="fortune-container">
+    <h1 class="page-title">🔮 Gieo Quẻ Tâm Linh 🔮</h1>
+    <p class="subtitle">Dự báo "nhân phẩm" 5 ngày Tết của bạn</p>
+
+    @if (forecasts == null)
+    {
+        <div class="loading">
+            <span class="spinner">🌀</span> Đang thắp hương xin quẻ...
+        </div>
+    }
+    else
+    {
+        <div class="cards-grid">
+            @foreach (var f in forecasts)
+            {
+                <div class="fortune-card @GetVibeClass(f.VibeScore)">
+                    <div class="card-header">
+                        <span class="date">@f.TetDay</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="icon">@f.Icon</div>
+                        <h3>@f.Status</h3>
+                        <p class="advice">"@f.Advice"</p>
+                    </div>
+                    <div class="card-footer">
+                        Độ may: @f.VibeScore/10
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<FortuneModel>? forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Giả lập loading mạng
+        await Task.Delay(1000);
+
+        forecasts = new List<FortuneModel>
+        {
+            new() { TetDay = "Mùng 1", Icon = "🌸", Status = "Hoan Hỉ", Advice = "Mặc đồ đỏ, cười nhiều, đừng quạo nha má!", VibeScore = 10 },
+            new() { TetDay = "Mùng 2", Icon = "🥂", Status = "Tới Bến", Advice = "Nhậu ít thôi, coi chừng ói!", VibeScore = 8 },
+            new() { TetDay = "Mùng 3", Icon = "🛌", Status = "Hết Pin", Advice = "Ngủ bù nguyên ngày, đừng ai làm phiền.", VibeScore = 5 },
+            new() { TetDay = "Mùng 4", Icon = "💸", Status = "Viêm Màng Túi", Advice = "Lì xì hết rồi, ngồi khóc một mình.", VibeScore = 2 },
+            new() { TetDay = "Mùng 5", Icon = "🏃", Status = "Chạy Deadline", Advice = "Mai đi làm rồi, tỉnh lại đi!", VibeScore = 1 }
+        };
+    }
+
+    private string GetVibeClass(int score)
+    {
+        if (score >= 8) return "good-vibe";
+        if (score <= 4) return "bad-vibe";
+        return "mid-vibe";
+    }
+
+    public class FortuneModel
+    {
+        public string TetDay { get; set; } = "";
+        public string Icon { get; set; } = "";
+        public string Status { get; set; } = "";
+        public string Advice { get; set; } = "";
+        public int VibeScore { get; set; }
+    }
+}

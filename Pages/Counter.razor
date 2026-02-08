@@ -1,0 +1,62 @@
+﻿@page "/counter"
+
+<PageTitle>Lì Xì Clicker</PageTitle>
+
+<div class="lixi-container">
+    <h1 class="lixi-title">🧧 MÁY XIN LÌ XÌ 🧧</h1>
+
+    <div class="lixi-stats">
+        <p>Tổng thu nhập:</p>
+        <span class="money animate-pop">@currentMoney.ToString("N0") VNĐ</span>
+    </div>
+
+    <div class="lixi-action">
+        <!-- Nút bấm bao lì xì to đùng -->
+        <button class="btn-lixi @(isClicking ? "clicked" : "")" @onclick="GetMoney" @onanimationend="() => isClicking = false">
+            🧧
+        </button>
+        <p class="guide">Bấm nhiệt tình vào bao lì xì!</p>
+    </div>
+
+    <div class="lixi-log">
+        <p class="log-text">@message</p>
+    </div>
+</div>
+@code {
+    private int currentMoney = 0;
+    private string message = "Chưa có đồng nào, nghèo quá!";
+    private bool isClicking = false;
+    private Random rand = new Random();
+
+    // Kho tàng lời thoại Gen Z
+    private string[] phrases = new[]
+    {
+        "Ting ting! +50k từ Dì Năm!",
+        "Chốt đơn! +100k, slay quá!",
+        "Lì xì này là của mẹ cầm hộ nha...",
+        "Ú òa! +20k an ủi.",
+        "Kiếp này coi như bỏ, lì xì gì có 10k!",
+        "1 tờ xanh lá, xa lánh!",
+        "Đại gia chân đất lì xì 500k!",
+        "Không làm mà đòi có ăn à? (Đùa thôi +5k)"
+    };
+
+    private void GetMoney()
+    {
+        isClicking = true;
+        // Random tiền từ 10k đến 500k
+        int amount = rand.Next(1, 51) * 10000;
+        currentMoney += amount;
+
+        // Chọn câu thoại ngẫu nhiên
+        message = phrases[rand.Next(phrases.Length)];
+
+        // Bonus hiếm
+        if (rand.NextDouble() < 0.1) // 10% cơ hội
+        {
+            amount *= 2;
+            message = "✨ JACKPOT! Nhân đôi lì xì nè keo lì! ✨";
+            currentMoney += amount;
+        }
+    }
+}

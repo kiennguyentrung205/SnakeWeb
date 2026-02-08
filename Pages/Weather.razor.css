@@ -1,0 +1,99 @@
+﻿.fortune-container {
+    color: white;
+    padding: 20px;
+}
+
+.page-title {
+    color: #FFD700;
+    font-weight: 900;
+    text-align: center;
+    text-shadow: 2px 2px 0 #d00000;
+}
+
+.subtitle {
+    text-align: center;
+    color: #ffcccb;
+    font-style: italic;
+    margin-bottom: 30px;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.fortune-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s;
+}
+
+    .fortune-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+/* Theme colors based on score */
+.good-vibe {
+    border-color: #00ff00;
+    background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), transparent);
+}
+
+.bad-vibe {
+    border-color: #ff0000;
+    background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), transparent);
+}
+
+.mid-vibe {
+    border-color: #FFD700;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), transparent);
+}
+
+.date {
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background: #990000;
+    padding: 5px 15px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+}
+
+.icon {
+    font-size: 4rem;
+    margin: 15px 0;
+}
+
+h3 {
+    font-weight: bold;
+    color: white;
+    margin-bottom: 10px;
+}
+
+.advice {
+    color: #ddd;
+    font-style: italic;
+    font-size: 1.1rem;
+}
+
+.loading {
+    text-align: center;
+    font-size: 2rem;
+    margin-top: 50px;
+}
+
+.spinner {
+    display: inline-block;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}

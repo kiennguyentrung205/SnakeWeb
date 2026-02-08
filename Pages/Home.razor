@@ -1,0 +1,158 @@
+﻿@page "/"
+@using SnakeWeb.Game
+@using Microsoft.AspNetCore.Components.Web
+
+<div class="tet-page @(VM.State.IsInked ? "ink-effect" : "")">
+
+    <!-- Lớp background hoa rơi (CSS) -->
+    <div class="bg-pattern"></div>
+
+    <div class="tet-header">
+        <div class="tet-title-box animate-bounce-slow">
+            <h1>🧧 RẮN SĂN TẾT 🧧</h1>
+        </div>
+        <div class="tet-scoreboard">
+            <div class="score-box">
+                <span class="label">Lì Xì</span>
+                <span class="value">@VM.Score</span>
+            </div>
+            <div class="status-box">
+                @VM.StatusText
+            </div>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <!-- Grid Game -->
+        <div class="board"
+             style="grid-template-rows: repeat(@VM.Rows, 1fr);
+                    grid-template-columns: repeat(@VM.Columns, 1fr);"
+             @onkeydown="OnKeyDown"
+             tabindex="0"
+             @ref="BoardElement">
+
+            @for (int r = 0; r < VM.Rows; r++)
+            {
+                for (int c = 0; c < VM.Columns; c++)
+                {
+                    <div class="cell">
+                        @GetCellContent(r, c)
+                    </div>
+                }
+            }
+
+            <!-- Hiệu ứng chữ bay khi ăn -->
+            @if (VM.ShowFloatingMsg)
+            {
+                <div class="floating-text">@VM.LastFloatingMsg</div>
+            }
+        </div>
+
+        <!-- Màn hình Game Over -->
+        @if (VM.StatusText == "Hết Tết Rồi!")
+        {
+            <div class="overlay game-over">
+                <div class="overlay-content">
+                    <h1>😅 TOANG RỒI!</h1>
+                    <p>Tổng thu hoạch: <strong style="color:yellow">@VM.Score</strong></p>
+                    <p class="rank-title">Danh hiệu: @VM.RankTitle</p>
+                    <button class="btn-tet" @onclick="Restart">Làm lại cuộc đời</button>
+                </div>
+            </div>
+        }
+
+        <!-- Màn hình Start -->
+        @if (VM.StatusText == "Sẵn sàng du xuân")
+        {
+            <div class="overlay start-screen">
+                <div class="overlay-content">
+                    <h1>🌸 DU XUÂN 2026 🌸</h1>
+                    <p>Luật chơi ngày Tết:</p>
+                    <ul class="rules">
+                        <li>🧧 Lì xì: +1 điểm</li>
+                        <li>🐖 Heo vàng: +10 điểm (Jackpot!)</li>
+                        <li>🦑 Mực: -5 điểm & bị phun đen (Đừng ăn!)</li>
+                    </ul>
+                    <button class="btn-tet" @onclick="Start">Khai Xuân Ngay</button>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Nút điều khiển mobile -->
+    <div class="mobile-controls">
+        <div class="row">
+            <button class="d-pad" @onclick="() => VM.ChangeDirection(Direction.Up)">⬆️</button>
+        </div>
+        <div class="row">
+            <button class="d-pad" @onclick="() => VM.ChangeDirection(Direction.Left)">⬅️</button>
+            <button class="d-pad" @onclick="() => VM.ChangeDirection(Direction.Down)">⬇️</button>
+            <button class="d-pad" @onclick="() => VM.ChangeDirection(Direction.Right)">➡️</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private GameViewModel VM = new();
+    private ElementReference BoardElement;
+
+    protected override void OnInitialized()
+    {
+        VM.OnStateChanged = () => InvokeAsync(StateHasChanged);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await BoardElement.FocusAsync();
+    }
+
+    void Start() { VM.Start(); BoardElement.FocusAsync(); }
+    void Restart() { VM.Restart(); BoardElement.FocusAsync(); }
+
+    MarkupString GetCellContent(int r, int c)
+    {
+        // 1. Vẽ Vật phẩm
+        if (VM.State.CurrentItem.Row == r && VM.State.CurrentItem.Column == c)
+        {
+            // Hiệu ứng nhảy cho vật phẩm
+            return new MarkupString($"<span class='item-icon bounce'>{VM.State.CurrentItem.Icon}</span>");
+        }
+
+        // 2. Vẽ Rắn
+        for (int i = 0; i < VM.State.SnakeParts.Count; i++)
+        {
+            var p = VM.State.SnakeParts[i];
+            if (p.Row == r && p.Column == c)
+            {
+                if (i == 0) // Đầu rắn
+                {
+                    // Xoay đầu rồng theo hướng
+                    string rotate = "0deg";
+                    if (VM.CurrentDirection == Direction.Down) rotate = "180deg";
+                    if (VM.CurrentDirection == Direction.Left) rotate = "-90deg";
+                    if (VM.CurrentDirection == Direction.Right) rotate = "90deg";
+
+                    return new MarkupString($"<span style='display:block; transform:rotate({rotate})'>🐲</span>");
+                }
+                else // Thân rắn
+                {
+                    return new MarkupString("🟡");
+                }
+            }
+        }
+
+        return new MarkupString("");
+    }
+
+    void OnKeyDown(KeyboardEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case "ArrowUp": VM.ChangeDirection(Direction.Up); break;
+            case "ArrowDown": VM.ChangeDirection(Direction.Down); break;
+            case "ArrowLeft": VM.ChangeDirection(Direction.Left); break;
+            case "ArrowRight": VM.ChangeDirection(Direction.Right); break;
+        }
+    }
+}

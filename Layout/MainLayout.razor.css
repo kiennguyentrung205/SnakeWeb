@@ -1,0 +1,90 @@
+﻿.tet-app {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: #3e0000; /* Đỏ đậm */
+    background-image: radial-gradient(circle at 10% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 20%), radial-gradient(circle at 90% 80%, rgba(255, 0, 128, 0.1) 0%, transparent 20%);
+    min-height: 100vh;
+    font-family: 'Patrick Hand', cursive, sans-serif;
+}
+
+main {
+    flex: 1;
+}
+
+.sidebar {
+    background: linear-gradient(180deg, #990000 0%, #4a0000 100%);
+    box-shadow: 4px 0 15px rgba(0,0,0,0.5);
+    z-index: 100;
+}
+
+.top-row {
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+    justify-content: space-between;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    color: #FFD700;
+}
+
+.marquee {
+    font-weight: bold;
+    animation: glow 2s infinite alternate;
+}
+
+.tet-link {
+    color: #FFD700;
+    text-decoration: none;
+    font-weight: bold;
+    border: 1px solid #FFD700;
+    padding: 5px 15px;
+    border-radius: 20px;
+    transition: all 0.3s;
+}
+
+    .tet-link:hover {
+        background: #FFD700;
+        color: #990000;
+    }
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 5px #fff, 0 0 10px #FFD700;
+    }
+
+    to {
+        text-shadow: 0 0 10px #fff, 0 0 20px #ff00de;
+    }
+}
+
+@media (max-width: 640.98px) {
+    .top-row {
+        justify-content: space-between;
+    }
+}
+
+@media (min-width: 641px) {
+    .tet-app {
+        flex-direction: row;
+    }
+
+    .sidebar {
+        width: 280px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+    }
+
+    .top-row {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    .top-row, article {
+        padding-left: 2rem !important;
+        padding-right: 1.5rem !important;
+    }
+}
